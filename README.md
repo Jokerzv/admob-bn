@@ -1,4 +1,4 @@
-![Logo](https://github.com/Jokerzv/admob-bn/blob/main/poster.png?raw=true)
+![Logo](https://raw.githubusercontent.com/Jokerzv/admob-bn/main/poster.png)
 
 Check your python version, it should be at least 3.x
     python --version
