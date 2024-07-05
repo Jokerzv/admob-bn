@@ -1,5 +1,9 @@
 Check your python version, it should be at least 3.x
-```python --version```
+```
+python --version
+```
 
 Activate the virtual environment:
-```myenv\Scripts\activate```
+```
+myenv\Scripts\activate
+```
