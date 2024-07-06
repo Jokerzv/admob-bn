@@ -109,24 +109,37 @@ def play_sound():
         time.sleep(1)
 
 def main():
-    raw_report = api.generate_report('pub-************') #  Here your ID publish google account
+    raw_report = api.generate_report('pub-******')
     report_as_list_of_dictionaries = api.report_to_list_of_dictionaries(raw_report)
     total_earnings_today = sum(float(item['ESTIMATED_EARNINGS']) for item in report_as_list_of_dictionaries)
     rounded_earnings = round(total_earnings_today / 1000000, 2)
     formatted_earnings = '{:,.2f}'.format(rounded_earnings)
 
-    with open('earnings_history.txt', 'r') as file:
-        history = file.readlines()
+    # Ensure the history file exists and has valid content
+    last_saved_earning_2 = '0.00'  # Default value if no valid previous earning is found
+    try:
+        with open('earnings_history.txt', 'r') as file:
+            history = file.readlines()
+            if history:
+                last_saved_earning_2 = history[-1].strip()
+                if not last_saved_earning_2 or not last_saved_earning_2.replace(',', '').replace('.', '').isdigit():
+                    last_saved_earning_2 = '0.00'
+    except FileNotFoundError:
+        print("History file not found. Creating a new one.")
+        open('earnings_history.txt', 'w').close()
 
-    last_saved_earning_2 = history[-1].strip()
+    # Calculate the difference
     p = '{:,.2f}'.format(float(formatted_earnings) - float(last_saved_earning_2))
     formatted_earnings_text = "+" + str(p) + "$"
 
+    # Send notification
     send_desktop_notification("AdMob", formatted_earnings_text)
     
+    # Play sound in a separate thread
     sound_thread = threading.Thread(target=play_sound)
     sound_thread.start()
 
+    # Append the current earnings to the history file
     with open('earnings_history.txt', 'a') as file:
         file.write(formatted_earnings + '\n')
 
